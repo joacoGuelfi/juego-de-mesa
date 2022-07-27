@@ -1,0 +1,5 @@
+.casillero, .dadoClass{
+    border: 1px black solid;
+    height: 70px;
+    width: 70px;
+}
