@@ -1,5 +1,17 @@
 .casillero, .dadoClass{
     border: 1px black solid;
-    height: 70px;
-    width: 70px;
+    height: 100px;
+    width: 100px;
+}
+
+.jugador {
+    padding: 0px;
+    margin: 5px;
+    border: 1px solid black;
+    height: 12px;
+    width: 15px;
+    
+}
+.dadoClass, .turnoCard{
+    display: inline-block;
 }

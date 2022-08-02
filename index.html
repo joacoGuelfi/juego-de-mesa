@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,27 +9,35 @@
     <link rel="stylesheet" href="https://bootswatch.com/5/lumen/bootstrap.min.css">
     <link rel="stylesheet" href="style/style.css">
 </head>
+
 <body>
-<h1>Bienvenidos al juego de mesa!</h1>
-<!-- form de creacion de personaje -->
-<div class="container">
-    <form id="form">
-        <label for="nombreForm">Nombre</label>
-        <input type="text" name="nombre" id="nombreForm">
-        <input type="color" name="color" id="colorForm">
-        <button type="submit">Crear jugador</button>
-    </form>
-</div>
-
-<div class="dadoClass" id="dado"></div>
-<button id="comenzar">Comenzar a jugar!</button>
-<button id="tirar">Tirar dado!</button>
-
-<div id="filas" class="container row"></div>
+    <h1>Bienvenidos al juego de mesa!</h1>
+    <!-- form de creacion de personaje -->
+    <div class="container">
+        <form id="form">
+            <label for="nombreForm">Nombre</label>
+            <input type="text" name="nombre" id="nombreForm">
+            <input type="color" name="color" id="colorForm">
+            <button type="submit">Crear jugador</button>
+        </form>
+    </div>
 
 
-    
+    <div class="dadoClass">
+        <p class="text-center">Dado!</p>
+        <div id="dado"></div>
+    </div>
+    <div class="container turnoCard" id="turno"></div>
+    <button id="instructions">Reglas</button>
+    <button id="comenzar">Comenzar a jugar!</button>
+    <button id="tirar">Tirar dado!</button>
 
+    <div id="filas" class="container row"></div>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="script/script.js"></script>
 </body>
+
 </html>
