@@ -46,33 +46,52 @@ function mosTurno(contador) {
   </div>`
 }
 // 4.MOVIMIENTO DE LOS JUGADORES
-function moverJugador(dado, turno) {
+function moverJugador(dado, turnoNumero) {
     // OBTENER LA POSICION DEL JUGADOR
     let jugador = JSON.parse(localStorage.getItem("player"))
-    let { posicion, color, nombre } = jugador[turno]
+    let { posicion, color, nombre } = jugador[turnoNumero]
 
     // ELIMINAR LA POSICION ANTERIOR 
-    let mostrarPos = document.getElementById(`casi${posicion}`)
+    let mostrarPos = document.getElementById(`casi${posicion}${turnoNumero}`)
     mostrarPos.innerHTML = ""
 
-    jugador[turno].posicion = posicion + dado
+    // MOVER AL JUGADOR 
+    jugador[turnoNumero].posicion = posicion + dado
+    posicion = posicion + dado
+    player = jugador
+    localStorage.setItem("player", JSON.stringify(player))
 
-    if (ganador(jugador[turno].posicion)) {
-        jugador[turno].posicion = 50
+    // DETERMINAR SI EL JUGADOR SE MOVIO HACIA UNA TRAMPA.
+    let cayo
+    cayo = document.getElementById(`safe${posicion}`)
+    console.log(cayo)
+    penalizar = cayo ?? "trampa"
+    console.log(penalizar)
+    if (penalizar == "trampa") {
+        Swal.fire(
+            'TRAMPA',
+            `${nombre} cayo en una trampa. Retrocede 3 casilleros.`,
+            'warning',
+        )
+        jugador[turnoNumero].posicion = posicion -3
+        posicion = posicion -3
+        player = jugador
+        localStorage.setItem("player", JSON.stringify(player))
+    }
+
+    // MOSTRAR LA NUEVA POSICION DEL JUGADOR 
+    mostrarPos = document.getElementById(`casi${posicion}${turnoNumero}`)
+    mostrarPos.innerHTML += `<div class="jugador" style="background-color:${color};"></div> `
+
+    // DETERMINAR GANDOR
+    if (ganador(jugador[turnoNumero].posicion)) {
+        jugador[turnoNumero].posicion = 50
         Swal.fire(
             'Felicitaciones',
             `El ganador es ${nombre}`,
             'success',
-          )
+        )
     }
-
-    // MOVER AL JUGADOR 
-    player = jugador
-    localStorage.setItem("player", JSON.stringify(player))
-
-    // MOSTRAR LA NUEVA POSICION DEL JUGADOR 
-    mostrarPos = document.getElementById(`casi${jugador[turno].posicion}`)
-    mostrarPos.innerHTML += `<div class="jugador " style="background-color:${color};"></div> `
 }
 
 // 5.VALIDAR UN MAXIMO DE 4 JUGADORES. 
@@ -86,7 +105,7 @@ function validacion(array, nuevoJugador) {
             'Cuidado!',
             `Maximo 4 jugadores`,
             'warning',
-          )
+        )
     }
 }
 
@@ -109,32 +128,54 @@ form.addEventListener("submit", (e) => {
 })
 
 // REGLAS
-mostrarReglas.addEventListener("click", ()=>{
+mostrarReglas.addEventListener("click", () => {
     Swal.fire(
         'Reglas',
         `El primer jugador en llegar al casillero 50 es el ganador! Cuidado con los casilleros trampa, podes perder turnos o retroceder casilleros.`,
         'question',
-      )
+    )
 })
 
 // CREACION DEL TABLERO 
 btnComenzar.addEventListener("click", () => {
+    // CRACION DE EVENTOS
+    // RETROCEDER CASILLEROS.
+    let arrayTrap = trampas(), posTrampa = 0
+
     let tablero = document.getElementById("filas")
     tablero.innerHTML = ""
     for (let i = 0; i < 5; i++) {
         tablero.innerHTML += `<div id="fila${i}" class="container row"></div>`
         for (let p = 1; p <= 10; p++) {
-            tablero.innerHTML += `
-            <div class="casillero" id="pos${p + (i * 10)}">
-                <p class="text-end">${p + (i * 10)}</p>
-                <div class="container" id="casi${p + (i * 10)}"></div>
-            </div>`
+            if (arrayTrap[posTrampa] == p + (i * 10)) {
+                tablero.innerHTML += `
+                <div style="background-color: red;" class="casillero" id="trampa${p + (i * 10)}">
+                    <p class="text-end">${p + (i * 10)}</p>
+                    <div class="container" id="casi${p + (i * 10)}0"></div>
+                    <div class="container" id="casi${p + (i * 10)}1"></div>
+                    <div class="container" id="casi${p + (i * 10)}2"></div>
+                    <div class="container" id="casi${p + (i * 10)}3"></div>
+                </div>`
+                posTrampa++
+            } else {
+                tablero.innerHTML += `
+                <div class="casillero" id="safe${p + (i * 10)}">
+                    <p class="text-end">${p + (i * 10)}</p>
+                    <div class="container" id="casi${p + (i * 10)}0"></div>
+                    <div class="container" id="casi${p + (i * 10)}1"></div>
+                    <div class="container" id="casi${p + (i * 10)}2"></div>
+                    <div class="container" id="casi${p + (i * 10)}3"></div>
+                </div>`
+            }
+
         }
     }
-    // UBICAR A CADA JUGADOR EN SU POSICION 
+    // POSICION INICIAL 
+    let asd = 0
     player.forEach(jugador => {
-        mostrarPos = document.getElementById(`casi${jugador.posicion}`)
+        mostrarPos = document.getElementById(`casi${jugador.posicion}${asd}`)
         mostrarPos.innerHTML += `<div class="jugador " style="background-color:${jugador.color};"></div> `
+        asd++
     });
 })
 
@@ -145,12 +186,27 @@ btnTirar.addEventListener("click", () => {
     mosTurno(turnoNumero)
 })
 
-
+// TRAMPA RETROCEDER CASILLEROS
+function trampas() {
+    let randomCas, plus = 0
+    let arrayTrap = []
+    for (let i = 1; i < 6; i++) {
+        // GENERA NUMEROS ALEATOREOS ENTRE 1-10/11-20/21-30/31-40/41-50 (PARA DETERMINAR UNA TRAMPA POR FILA DE TABLERO).
+        randomCas = parseInt(Math.floor((Math.random() * 10) + (plus + 1)))
+        plus = plus + 10
+        arrayTrap.push(randomCas)
+    }
+    return arrayTrap
+}
 
 /*
  FALTA: 
  1. ANIMACION DE MOVIMIENTO PARA LOS PEONES
- 2. CUANDO DOS JUGADORES ESTAN EN EL MISMO CASSILLERO BORRA AMBOS JUGADORES CUANDO UNO DEJA EL CASILLERO
  4. AGREGAR CASILLEROS CON EVENTOS
+        EN TRAMPAS DE RETROCEDER HACER EL RETROCESO ALEATORIO  DE 1 A 3 CASILLEROS. CREANDO OBJETO
+ 5. AGREGAR FUEGO 
 
 */
+
+
+
