@@ -1,17 +1,46 @@
-.casillero, .dadoClass{
+.casillero{
     border: 1px black solid;
     height: 115px;
     width: 100px;
 }
 
-.jugador {
+.jugador{
     padding: 0px;
-    margin: 5px;
+    margin: 2px;
     border: 1px solid black;
-    height: 12px;
-    width: 15px;
+    width: 30px;
+ 
     
 }
-.dadoClass, .turnoCard{
+.card{
+    border: 1px black solid;
     display: inline-block;
+}
+.dadoClass{
+    display: inline-block;
+    border: 1px black solid;
+    height: 115px;
+    width: 100px;
+}
+
+.boton{
+    color: black;
+    font-weight: bold;
+    border: black 1px solid;
+    border-radius: 10%;
+    background-color: rgb(170, 60, 60);
+    padding: 7px;
+}
+.itemForm{
+    margin: 7px;
+}
+body{
+    background: rgb(0,0,0);
+background: linear-gradient(0deg, rgba(0,0,0,1) 7%, rgba(172,18,18,1) 68%, rgba(235,6,6,1) 88%);
+}
+h1{
+    margin-top: 50px;
+}
+.casillero{
+    background-color: white;
 }

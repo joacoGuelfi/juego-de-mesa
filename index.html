@@ -13,28 +13,31 @@
 </head>
 
 <body>
-    <h1>Bienvenidos al juego de mesa!</h1>
+    <h1 class="text-center">Marvel´s Tabletop</h1>
     <!-- form de creacion de personaje -->
-    <div class="container">
-        <form id="form">
-            <label for="nombreForm">Nombre</label>
-            <input type="text" name="nombre" id="nombreForm">
-            <input type="color" name="color" id="colorForm">
-            <button type="submit">Crear jugador</button>
+    <div>
+        <form style="display: flex;justify-content: center;align-items: center;" id="form">
+            <label class="itemForm" for="nombreForm">Nombre</label>
+            <input class="itemForm" type="text" name="nombre" id="nombreForm">
+            <button class="boton itemForm" type="submit">Crear un Heroe!</button>
         </form>
     </div>
 
-
-    <div class="dadoClass">
-        <p class="text-center">Dado!</p>
-        <div id="dado"></div>
+<div style="display: flex;flex-direction: row;flex-wrap: nowrap;align-items: center;justify-content: space-evenly;">
+        <div class="dadoClass">
+            <p class="text-center">Dado!</p>
+            <div id="dado"></div>
+        </div>
+        
+        <button class="boton" id="instructions">Reglas</button>
+        <button class="boton" id="comenzar">Comenzar a jugar!</button>
+        <button class="boton" id="tirar">Tirar dado!</button>
+        <div class=" turnoCard" id="turno"></div>
     </div>
-    <div class="container turnoCard" id="turno"></div>
-    <button id="instructions">Reglas</button>
-    <button id="comenzar">Comenzar a jugar!</button>
-    <button id="tirar">Tirar dado!</button>
-
-    <div id="filas" class="container row"></div>
+    <div style="display: flex;justify-content: center;">
+    <div class="container row tablero" id="filas" ></div>
+    </div>
+    <div id="heros"></div>
 
 
 
