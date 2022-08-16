@@ -198,7 +198,9 @@ btnComenzar.addEventListener("click", () => {
             if (arrayTrap[posTrampa] == p + (i * 10)) {
                 tablero.innerHTML += `
                 <div style="background-color: red; " class="casillero" id="trampa${p + (i * 10)}">
-                <p class="texto-casi text-end">${p + (i * 10)}</p>
+                <p style="
+    margin-bottom: 5px;
+" class="texto-casi text-end">${p + (i * 10)}</p>
                 <div style="display: flex;flex-direction: row;flex-wrap: wrap;justify-content: center;align-content: center;">
                     <div id="casi${p + (i * 10)}0"></div>
                     <div id="casi${p + (i * 10)}1"></div>
@@ -210,7 +212,9 @@ btnComenzar.addEventListener("click", () => {
             } else {
                 tablero.innerHTML += `
                 <div class="casillero" id="safe${p + (i * 10)}">
-                <p class="texto-casi text-end">${p + (i * 10)}</p>
+                <p style="
+    margin-bottom: 5px;
+" class="texto-casi text-end">${p + (i * 10)}</p>
                 <div style="display: flex;flex-direction: row;flex-wrap: wrap;justify-content: center;align-content: center;">
                     <div id="casi${p + (i * 10)}0"></div>
                     <div id="casi${p + (i * 10)}1"></div>
