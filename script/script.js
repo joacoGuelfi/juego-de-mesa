@@ -17,6 +17,7 @@ const btnTirar = document.getElementById("tirar")
 const mostrarDado = document.getElementById("dado")
 const mostrarTurno = document.getElementById("turno")
 const mostrarReglas = document.getElementById("instructions")
+const btnReinicio = document.getElementById("reinicio")
 
 
 // FUNCIONES
@@ -55,18 +56,41 @@ function moverJugador(dado, turnoNumero) {
     let jugador = JSON.parse(localStorage.getItem("player"))
     let { posicion, color, nombre } = jugador[turnoNumero]
 
-    // ELIMINAR LA POSICION ANTERIOR 
-    let mostrarPos = document.getElementById(`casi${posicion}${turnoNumero}`)
-    mostrarPos.innerHTML = ""
-    // MOVER AL JUGADOR 1 A 1. (VISUAL)
-    for (i = 1; i <= dado; i++) {
+
+    // MOVIMIENTO DEL JUGADOR.
+    let counter = 0, movimiento = posicion
+    const interval = setInterval(() => {
+        counter++
+        //accion
+        let mostrarPos = document.getElementById(`casi${movimiento}${turnoNumero}`)
         mostrarPos.innerHTML = ""
-        posicion++
-        mostrarPos = document.getElementById(`casi${posicion}${turnoNumero}`)
+        movimiento++
+        mostrarPos = document.getElementById(`casi${movimiento}${turnoNumero}`)
         mostrarPos.innerHTML += `<div class="jugador" > <img style="width:30px;" src="${color}" alt=""> </div> `
-    }
+        console.log(movimiento)
+        // ESTE IF CORTA LA EJECUCION DEL INTERVALO AL LLEGAR AL CASILLERO 50
+        if (movimiento >= 50) {
+            counter = 10
+        }
+        // ESTE IF CORTA LA EJECUCION DEL INTERVALO SI EL JUADOR CAYO EN UNA TRAMPA
+        if (penalizar == "trampa") {
+            counter = 10
+            mostrarPos = document.getElementById(`casi${movimiento}${turnoNumero}`)
+            mostrarPos.innerHTML = ""
+        }
+        if (counter >= dado) {
+            clearInterval(interval)
+        }
+
+    }, 500)
+    posicion = posicion + dado
+    console.log(posicion)
+
+
     // MOVER AL JUGADOR (LOCALSTORAGE)
-    (posicion > 50 ) ? posicion = 50 : 
+    if (posicion > 50) {
+        posicion = 50
+    }
     jugador[turnoNumero].posicion = posicion
     player = jugador
     localStorage.setItem("player", JSON.stringify(player))
@@ -83,18 +107,16 @@ function moverJugador(dado, turnoNumero) {
             `${nombre} cayo en una trampa. Retrocede 3 casilleros.`,
             'warning',
         )
+        // MOVER AL JUGADOR HACIA ATRAS 
+        mostrarPos = document.getElementById(`casi${posicion}${turnoNumero}`)
+        mostrarPos.innerHTML = ""
         jugador[turnoNumero].posicion = posicion - 3
         posicion = posicion - 3
         player = jugador
         localStorage.setItem("player", JSON.stringify(player))
-        // MOVER AL JUGADOR HACIA ATRAS 
-        mostrarPos.innerHTML = ""
         mostrarPos = document.getElementById(`casi${posicion}${turnoNumero}`)
         mostrarPos.innerHTML += `<div class="jugador" > <img style="width:30px;" src="${color}" alt=""> </div> `
     }
-
-    
-
     // DETERMINAR GANDOR
     if (ganador(jugador[turnoNumero].posicion)) {
         jugador[turnoNumero].posicion = 50
@@ -104,6 +126,19 @@ function moverJugador(dado, turnoNumero) {
             'success',
         )
     }
+
+
+
+
+}
+
+// 7.GANADOR
+function ganador(pos) {
+    let ganador = false
+    if (pos >= 50) {
+        ganador = true
+    }
+    return ganador
 }
 
 // 5.VALIDAR UN MAXIMO DE 4 JUGADORES. 
@@ -135,14 +170,7 @@ function trampas() {
 }
 
 
-// 7.GANADOR
-function ganador(pos) {
-    let ganador = false
-    if (pos >= 50) {
-        ganador = true
-    }
-    return ganador
-}
+
 
 // CREACION DEL JUGADOR 
 form.addEventListener("submit", (e) => {
@@ -151,7 +179,7 @@ form.addEventListener("submit", (e) => {
     let nombre = datForm.get("nombre")
     crearHeroe(nombre)
 
-    
+
 
 })
 //CREACION DE JUGADOR OBTTENIENDO DATOS DESDE MARVEL API 
@@ -164,16 +192,13 @@ function crearHeroe(nombre) {
             let name = hero.name
             let picture = `${hero.thumbnail.path}.${hero.thumbnail.extension}`
 
-            let nuevoJugador = new Jugador(name, picture, 1, 10)
+            let nuevoJugador = new Jugador(name, picture, 1)
             console.log(nuevoJugador)
 
             validacion(player, nuevoJugador)
         })
-    
+
 }
-
-
-
 
 // REGLAS
 mostrarReglas.addEventListener("click", () => {
@@ -198,7 +223,7 @@ btnComenzar.addEventListener("click", () => {
             if (arrayTrap[posTrampa] == p + (i * 10)) {
                 tablero.innerHTML += `
                 <div style="background-color: red; " class="casillero" id="trampa${p + (i * 10)}">
-                <p class="text-end">${p + (i * 10)}</p>
+                <p style="margin-bottom: 5px;" class="text-end">${p + (i * 10)}</p>
                 <div style="display: flex;flex-direction: row;flex-wrap: wrap;justify-content: center;align-content: center;">
                     <div id="casi${p + (i * 10)}0"></div>
                     <div id="casi${p + (i * 10)}1"></div>
@@ -210,7 +235,7 @@ btnComenzar.addEventListener("click", () => {
             } else {
                 tablero.innerHTML += `
                 <div class="casillero" id="safe${p + (i * 10)}">
-                <p class="text-end">${p + (i * 10)}</p>
+                <p style="margin-bottom: 5px;" class="text-end">${p + (i * 10)}</p>
                 <div style="display: flex;flex-direction: row;flex-wrap: wrap;justify-content: center;align-content: center;">
                     <div id="casi${p + (i * 10)}0"></div>
                     <div id="casi${p + (i * 10)}1"></div>
@@ -221,12 +246,7 @@ btnComenzar.addEventListener("click", () => {
             }
 
         }
-        // AL TOCAR EL BOTAN SE REINICIA EL JUEGO
-        turnoNumero = 0 
-        player.forEach(jugador => {
-            jugador.posicion = 1  
-            localStorage.setItem("player", JSON.stringify(player))
-        });
+       
         mosTurno(turnoNumero)
     }
     // POSICION INICIAL 
@@ -240,6 +260,21 @@ btnComenzar.addEventListener("click", () => {
     mosTurno(turnoNumero)
 })
 
+btnReinicio.addEventListener("click", () => {
+     // AL TOCAR EL BOTAN SE REINICIA EL JUEGO
+     turnoNumero = 0
+     player.forEach(jugador => {
+         jugador.posicion = 1
+         localStorage.setItem("player", JSON.stringify(player))
+     });
+     let ubi = 0
+     player.forEach(jugador => {
+         mostrarPos = document.getElementById(`casi${jugador.posicion}${ubi}`)
+         mostrarPos.innerHTML = `<div class="jugador" > <img style="width:30px;" src="${jugador.color}" alt=""> </div> `
+         ubi++
+     });
+})
+
 btnTirar.addEventListener("click", () => {
     let dado = tirarDado()
     moverJugador(dado, turnoNumero)
@@ -249,11 +284,5 @@ btnTirar.addEventListener("click", () => {
 
 
 
-/*
- FALTA: 
- 1. ANIMACION DE MOVIMIENTO PARA LOS PEONES una promise 
-
-
-*/
 
 
